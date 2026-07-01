@@ -8,11 +8,13 @@ Shared main navigation header for Meavo apps: logo, tool switcher, nav links, an
 npm install @meavo/navigation
 ```
 
-From GitHub (before publishing to npm):
+From GitHub (Vercel-compatible HTTPS URL):
 
 ```json
-"@meavo/navigation": "github:meavo-booths/meavo-navigation#v0.1.0"
+"@meavo/navigation": "git+https://github.com/meavo-booths/meavo-navigation.git#v0.1.0"
 ```
+
+Avoid `github:org/repo` on Vercel — npm resolves that via SSH, which fails without deploy keys.
 
 ## Tailwind
 
