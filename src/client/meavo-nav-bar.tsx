@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import type { NavLink, ToolSwitcherState } from "../types";
 import { ToolSwitcher } from "./tool-switcher";
-import { ToolSwitcherLinks } from "./tool-switcher-links";
 import { UserAvatar } from "./user-avatar";
 
 function defaultIsActive(pathname: string, href: string): boolean {
@@ -96,7 +95,7 @@ export function MeavoNavBar({
               priority
             />
           </Link>
-          <div className="hidden shrink-0 md:block">
+          <div className="shrink-0">
             <ToolSwitcher currentId={toolSwitcher.currentId} options={toolSwitcher.options} />
           </div>
         </div>
@@ -150,13 +149,6 @@ export function MeavoNavBar({
           open ? "block" : "hidden"
         }`}
       >
-        <div className="border-b border-slate-100 px-0 py-3 md:hidden">
-          <ToolSwitcherLinks
-            currentId={toolSwitcher.currentId}
-            options={toolSwitcher.options}
-            onNavigate={() => setOpen(false)}
-          />
-        </div>
         <nav className="mx-auto max-w-6xl space-y-1 px-3 py-3" aria-label="Mobile">
           {renderLinks("block rounded-lg px-3 py-3 text-sm font-medium text-slate-700")}
         </nav>
