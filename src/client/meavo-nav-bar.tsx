@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import type { NavLink, ToolSwitcherState } from "../types";
 import { ToolSwitcher } from "./tool-switcher";
+import { ToolSwitcherLinks } from "./tool-switcher-links";
 import { UserAvatar } from "./user-avatar";
 
 function defaultIsActive(pathname: string, href: string): boolean {
@@ -79,7 +80,7 @@ export function MeavoNavBar({
   }
 
   return (
-    <header className="relative border-b border-slate-200 bg-white">
+    <header className="relative z-[100] border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-3 py-3 sm:px-4 sm:py-4">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <Link
@@ -95,7 +96,9 @@ export function MeavoNavBar({
               priority
             />
           </Link>
-          <ToolSwitcher currentId={toolSwitcher.currentId} options={toolSwitcher.options} />
+          <div className="hidden shrink-0 md:block">
+            <ToolSwitcher currentId={toolSwitcher.currentId} options={toolSwitcher.options} />
+          </div>
         </div>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
@@ -147,8 +150,12 @@ export function MeavoNavBar({
           open ? "block" : "hidden"
         }`}
       >
-        <div className="border-b border-slate-100 px-3 py-3 md:hidden">
-          <ToolSwitcher currentId={toolSwitcher.currentId} options={toolSwitcher.options} />
+        <div className="border-b border-slate-100 px-0 py-3 md:hidden">
+          <ToolSwitcherLinks
+            currentId={toolSwitcher.currentId}
+            options={toolSwitcher.options}
+            onNavigate={() => setOpen(false)}
+          />
         </div>
         <nav className="mx-auto max-w-6xl space-y-1 px-3 py-3" aria-label="Mobile">
           {renderLinks("block rounded-lg px-3 py-3 text-sm font-medium text-slate-700")}
