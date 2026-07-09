@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import { isExternalHref } from "../constants";
+import { isExternalHref } from "../gateway-url";
 import type { NavLink, ToolSwitcherState } from "../types";
 import { ToolSwitcher } from "./tool-switcher";
 import { UserAvatar } from "./user-avatar";
