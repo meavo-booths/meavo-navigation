@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import { isExternalHref } from "../constants";
 import type { NavLink, ToolSwitcherState } from "../types";
 import { ToolSwitcher } from "./tool-switcher";
 import { UserAvatar } from "./user-avatar";
@@ -59,6 +60,19 @@ export function MeavoNavBar({
 
   const displayName = userName ?? userEmail ?? "Account";
 
+  const logoClassName =
+    "flex shrink-0 items-center rounded-md focus:outline-none focus:ring-2 focus:ring-brand-100";
+  const logoImage = (
+    <Image
+      src="/meavo-logo.png"
+      alt="Meavo"
+      width={72}
+      height={36}
+      className="h-8 w-auto object-contain sm:h-9"
+      priority
+    />
+  );
+
   function renderLinks(className: string): ReactNode {
     return links.map((link) => {
       const active = isActiveLink(pathname, link.href);
@@ -82,19 +96,15 @@ export function MeavoNavBar({
     <header className="relative z-[100] border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-3 py-3 sm:px-4 sm:py-4">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-          <Link
-            href={logoHref}
-            className="flex shrink-0 items-center rounded-md focus:outline-none focus:ring-2 focus:ring-brand-100"
-          >
-            <Image
-              src="/meavo-logo.png"
-              alt="Meavo"
-              width={72}
-              height={36}
-              className="h-8 w-auto object-contain sm:h-9"
-              priority
-            />
-          </Link>
+          {isExternalHref(logoHref) ? (
+            <a href={logoHref} className={logoClassName}>
+              {logoImage}
+            </a>
+          ) : (
+            <Link href={logoHref} className={logoClassName}>
+              {logoImage}
+            </Link>
+          )}
           <div className="shrink-0">
             <ToolSwitcher currentId={toolSwitcher.currentId} options={toolSwitcher.options} />
           </div>
