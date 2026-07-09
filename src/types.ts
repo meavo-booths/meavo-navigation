@@ -1,4 +1,13 @@
-export type MeavoAppKey = "gateway" | "hols" | "assembly";
+export type MeavoAppKey =
+  | "gateway"
+  | "hols"
+  | "assembly"
+  | "sales"
+  | "mrp"
+  | "factory"
+  | "rp"
+  | "clock"
+  | "tasks";
 
 export type NavLink = {
   href: string;
