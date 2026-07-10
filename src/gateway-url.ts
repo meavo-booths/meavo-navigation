@@ -23,3 +23,7 @@ export function resolveGatewayUrl(raw: string | undefined): string {
 
   return fallback;
 }
+
+export function resolveProfileUrl(rawGatewayUrl: string): string {
+  return `${resolveGatewayUrl(rawGatewayUrl).replace(/\/$/, "")}/profile`;
+}

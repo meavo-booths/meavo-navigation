@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import { isExternalHref } from "../gateway-url";
+import { isExternalHref, resolveProfileUrl } from "../gateway-url";
 import type { NavLink, NotificationsState, ToolSwitcherState } from "../types";
 import { NotificationBell } from "./notification-bell";
 import { ToolSwitcher } from "./tool-switcher";
@@ -13,6 +13,60 @@ function defaultIsActive(pathname: string, href: string): boolean {
     return pathname === "/" || pathname.startsWith("/assemblies/");
   }
   return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
+}
+
+function UserProfileBlock({
+  profileHref,
+  displayName,
+  userName,
+  userEmail,
+  userImage,
+  textAlign = "left",
+}: {
+  profileHref: string | null;
+  displayName: string;
+  userName: string | null | undefined;
+  userEmail: string | null | undefined;
+  userImage?: string | null;
+  textAlign?: "left" | "right";
+}) {
+  const avatar = <UserAvatar name={userName} email={userEmail} image={userImage} size="sm" />;
+  const textBlock = (
+    <div className={`min-w-0 ${textAlign === "right" ? "max-w-[12rem] truncate text-right lg:max-w-none" : ""}`}>
+      <p className="truncate text-sm font-medium text-slate-900 group-hover:text-brand-700">{displayName}</p>
+      {userEmail && (
+        <p
+          className={`truncate text-sm text-slate-500 group-hover:text-brand-600 ${
+            textAlign === "right" ? "hidden lg:block" : ""
+          }`}
+        >
+          {userEmail}
+        </p>
+      )}
+    </div>
+  );
+
+  if (!profileHref) {
+    return (
+      <div className="flex items-center gap-3">
+        {avatar}
+        {textBlock}
+      </div>
+    );
+  }
+
+  return (
+    <a
+      href={profileHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Open profile on Gateway"
+      className="group flex touch-manipulation items-center gap-3 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-100"
+    >
+      {avatar}
+      {textBlock}
+    </a>
+  );
 }
 
 function SignOutButton({ className = "" }: { className?: string }) {
@@ -63,6 +117,8 @@ export function MeavoNavBar({
   }, [open]);
 
   const displayName = userName ?? userEmail ?? "Account";
+  const gatewayUrl = toolSwitcher.options.find((option) => option.id === "gateway")?.url;
+  const profileHref = gatewayUrl ? resolveProfileUrl(gatewayUrl) : null;
 
   const logoClassName =
     "flex shrink-0 items-center rounded-md focus:outline-none focus:ring-2 focus:ring-brand-100";
@@ -120,11 +176,14 @@ export function MeavoNavBar({
 
         <div className="hidden items-center gap-3 md:flex">
           {notifications && <NotificationBell notifications={notifications} />}
-          <UserAvatar name={userName} email={userEmail} image={userImage} size="sm" />
-          <div className="max-w-[12rem] truncate text-right text-sm lg:max-w-none">
-            <p className="truncate font-medium text-slate-900">{displayName}</p>
-            <p className="hidden truncate text-slate-500 lg:block">{userEmail}</p>
-          </div>
+          <UserProfileBlock
+            profileHref={profileHref}
+            displayName={displayName}
+            userName={userName}
+            userEmail={userEmail}
+            userImage={userImage}
+            textAlign="right"
+          />
           <form action={signOutAction}>
             <SignOutButton />
           </form>
@@ -171,13 +230,13 @@ export function MeavoNavBar({
           {renderLinks("block rounded-lg px-3 py-3 text-sm font-medium text-slate-700")}
         </nav>
         <div className="border-t border-slate-100 px-3 py-4">
-          <div className="flex items-center gap-3">
-            <UserAvatar name={userName} email={userEmail} image={userImage} size="sm" />
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-slate-900">{displayName}</p>
-              {userEmail && <p className="truncate text-sm text-slate-500">{userEmail}</p>}
-            </div>
-          </div>
+          <UserProfileBlock
+            profileHref={profileHref}
+            displayName={displayName}
+            userName={userName}
+            userEmail={userEmail}
+            userImage={userImage}
+          />
           <form action={signOutAction} className="mt-3">
             <SignOutButton className="w-full" />
           </form>
