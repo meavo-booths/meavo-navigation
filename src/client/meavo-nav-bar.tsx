@@ -3,7 +3,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { isExternalHref } from "../gateway-url";
-import type { NavLink, ToolSwitcherState } from "../types";
+import type { NavLink, NotificationsState, ToolSwitcherState } from "../types";
+import { NotificationBell } from "./notification-bell";
 import { ToolSwitcher } from "./tool-switcher";
 import { UserAvatar } from "./user-avatar";
 
@@ -33,6 +34,7 @@ export function MeavoNavBar({
   userEmail,
   userImage,
   signOutAction,
+  notifications,
   isActiveLink = defaultIsActive,
 }: {
   links: NavLink[];
@@ -42,6 +44,8 @@ export function MeavoNavBar({
   userEmail: string | null | undefined;
   userImage?: string | null;
   signOutAction: () => void | Promise<void>;
+  /** When provided, renders the cross-app notification bell. */
+  notifications?: NotificationsState;
   isActiveLink?: (pathname: string, href: string) => boolean;
 }) {
   const pathname = usePathname();
@@ -115,6 +119,7 @@ export function MeavoNavBar({
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          {notifications && <NotificationBell notifications={notifications} />}
           <UserAvatar name={userName} email={userEmail} image={userImage} size="sm" />
           <div className="max-w-[12rem] truncate text-right text-sm lg:max-w-none">
             <p className="truncate font-medium text-slate-900">{displayName}</p>
@@ -125,24 +130,27 @@ export function MeavoNavBar({
           </form>
         </div>
 
-        <button
-          type="button"
-          className="inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden"
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          aria-label={open ? "Close menu" : "Open menu"}
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? (
-            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          ) : (
-            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" d="M4 7h16M4 12h16M4 17h16" />
-            </svg>
-          )}
-        </button>
+        <div className="flex items-center gap-1 md:hidden">
+          {notifications && <NotificationBell notifications={notifications} />}
+          <button
+            type="button"
+            className="inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100"
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            aria-label={open ? "Close menu" : "Open menu"}
+            onClick={() => setOpen((value) => !value)}
+          >
+            {open ? (
+              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            ) : (
+              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" d="M4 7h16M4 12h16M4 17h16" />
+              </svg>
+            )}
+          </button>
+        </div>
       </div>
 
       {open && (
