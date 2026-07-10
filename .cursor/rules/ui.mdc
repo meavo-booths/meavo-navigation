@@ -1,0 +1,39 @@
+---
+description: Meavo UI standards (desktop + mobile) for meavo-navigation
+globs:
+  - src/client/**
+---
+
+# UI rules — Meavo design system
+
+Org standard (see STANDARDS.md §5 in meavo-agent-templates). This package **is** part of the shared Meavo shell — its markup must match the design system exactly, because every app renders it.
+
+## Components
+
+- Do NOT add shadcn, Radix, MUI, or any external component library.
+- No runtime CSS — Tailwind utility classes only; the consumer app's Tailwind config compiles them (its `content` must include `node_modules/@meavo/navigation/dist/**/*.js`).
+- Only use Tailwind classes consumers define: the `brand` palette and default scales (`slate`, etc.). A class that isn't in the consumer's config silently renders unstyled.
+
+## Palette & visual language
+
+- Brand green for active/selected states: `bg-brand-50 text-brand-700`; focus rings `focus:ring-brand-100`.
+- Neutrals: Tailwind `slate` scale. Buttons/inputs: `rounded-lg`; dropdowns `rounded-lg border border-slate-200 bg-white shadow-lg`.
+- Body text `text-sm`; names `font-medium text-slate-900`, secondary `text-slate-500`.
+
+## Responsive (required)
+
+- Mobile-first: style for the narrow viewport, add `sm:` / `md:` / `lg:` upward overrides.
+- Desktop nav hidden below `md:`; mobile menu (hamburger + overlay) above it — keep both in sync when adding UI.
+- Touch targets ≥ 44px (`touch-manipulation` on tappable controls); no hover-only affordances.
+- Verify changes at 375px and 1280px in a consumer app before opening a PR.
+
+## Interaction & accessibility
+
+- These are client components (`"use client"` banner is added at build time — do not add per-file directives that break bundling).
+- Dropdowns: close on outside pointer-down and Escape; `aria-expanded`, `aria-haspopup`, `role="listbox"` / `role="option"` as in `tool-switcher.tsx`.
+- Mobile menu: lock body scroll while open; close on route change.
+
+## Repo-specific deviations
+
+- No `src/components/ui.tsx` in-house kit here — that kit lives in each consumer app. This package ships self-contained header components instead.
+- No `@meavo/navigation` shell import (this repo is that shell); no `loading.tsx` / route skeletons (no routes).

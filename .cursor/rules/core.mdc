@@ -1,0 +1,58 @@
+---
+description: Core stack, layout, and guardrails for meavo-navigation (@meavo/navigation)
+alwaysApply: true
+---
+
+Environment: Shared npm package `@meavo/navigation` — the Meavo top nav + tool switcher consumed by every Meavo app. This is a **library**, not a Next.js app; nothing here runs standalone.
+
+## Stack
+
+- TypeScript strict, React 19; Next.js and `@prisma/client` are peer dependencies only
+- Tailwind class names compiled by the consumer app (brand palette + `slate` must be resolvable there)
+- tsup build → ESM `dist/` with two entries: `.` (client, `"use client"` banner) and `./server`
+- Published via git tags (`#vX.Y.Z`) and GitHub Packages; `prepare` builds on git installs
+
+## Do NOT
+
+- Add runtime `dependencies` — react, next, `@prisma/client` stay peer deps / tsup externals
+- Import `@prisma/client` or `@meavo/db` directly — use the structural `NavigationPrisma` type
+- Put server-only code anywhere reachable from `src/index.ts` (client entry is one `"use client"` bundle)
+- Show tools a non-admin user lacks `ToolCardAccess` for in `getAccessibleTools`
+- Use `linkedAppKey` for access decisions — only for resolving the "current" tool
+- Add a Meavo app key in one place only — update `MeavoAppKey`, `isMeavoAppKey`, `APP_FALLBACK_LABELS`, `MEAVO_APP_HOSTS` together
+- Edit `dist/` by hand; change public exports without updating `package.json` `exports` + `tsup.config.ts`
+
+## Code layout
+
+| Area | Path |
+|------|------|
+| Client components (nav bar, switcher, avatar) | `src/client/` |
+| Server helpers (tool access, current tool) | `src/server/` |
+| Shared types | `src/types.ts` |
+| App key registry (labels, hosts) | `src/constants.ts` |
+| Gateway URL helpers | `src/gateway-url.ts` |
+| Entry points | `src/index.ts` (client), `src/server.ts` (server) |
+| Build config | `tsup.config.ts` |
+
+## Data flow
+
+```
+Consumer app (server):
+  getAccessibleTools(prisma, { userId, isAdmin, gatewayUrl })
+    → ToolCard rows filtered by ToolCardAccess (admins see all active)
+    → [gateway entry, ...tools]
+  resolveCurrentToolId(options, MEAVO_APP_KEY) → currentId
+Consumer app (layout):
+  <MeavoNavBar links logoHref toolSwitcher userName signOutAction />
+Browser:
+  ToolSwitcher click → navigateToTool(url)
+    → *.meavo.app host: same tab | anything else: new tab (noopener)
+```
+
+Every public-API change must be released: bump `package.json` version → tag `vX.Y.Z` → push tags → bump git ref in consumer repos.
+
+## Docs for agents
+
+- `AGENTS.md` — quick orientation
+- `docs/architecture.md` — consumers, export map, release flow
+- `docs/domain.md` — tool visibility rules, app key registry
