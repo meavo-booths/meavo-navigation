@@ -1,0 +1,6 @@
+# Build artifacts — slow down search/indexing
+dist/
+node_modules/
+coverage/
+*.tsbuildinfo
+.DS_Store

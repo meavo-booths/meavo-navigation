@@ -41,4 +41,14 @@ import { MeavoNavBar } from "@meavo/navigation";
 import { getAccessibleTools, resolveCurrentToolId } from "@meavo/navigation/server";
 ```
 
-Set `MEAVO_APP_KEY=gateway|hols|assembly` and `GATEWAY_URL=https://meavo.app` in each app.
+Set `MEAVO_APP_KEY=gateway|hols|assembly|sales|mrp|factory|rp|clock|tasks` and `GATEWAY_URL=https://meavo.app` in each app.
+
+## Documentation
+
+| Doc | Purpose |
+|-----|---------|
+| [AGENTS.md](AGENTS.md) | Quick orientation for AI coding agents |
+| [.cursor/rules/](.cursor/rules/) | Always-on Cursor rules |
+| [docs/architecture.md](docs/architecture.md) | Consumers, export map, release flow |
+| [docs/domain.md](docs/domain.md) | Tool visibility rules and app key registry |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | PR process and release checklist |
