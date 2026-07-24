@@ -12,6 +12,7 @@ export const APP_FALLBACK_LABELS: Record<MeavoAppKey, string> = {
   rp: "RP",
   clock: "Clock-In",
   tasks: "Tasks",
+  requests: "Requests",
 };
 
 export const MEAVO_APP_HOSTS = new Set([
@@ -24,6 +25,7 @@ export const MEAVO_APP_HOSTS = new Set([
   "rp.meavo.app",
   "clock.meavo.app",
   "tasks.meavo.app",
+  "requests.meavo.app",
   "localhost",
 ]);
 
@@ -37,6 +39,7 @@ export function isMeavoAppKey(value: string | undefined): value is MeavoAppKey {
     value === "factory" ||
     value === "rp" ||
     value === "clock" ||
-    value === "tasks"
+    value === "tasks" ||
+    value === "requests"
   );
 }
