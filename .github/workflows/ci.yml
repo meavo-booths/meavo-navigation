@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, staging]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      # postinstall runs `prisma generate`, which reads the shared schema from
+      # @meavo/db and never connects to a database, so no secrets are needed.
+      - run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      # Advisory only: meavo-rp and meavo-clock still lack an ESLint config, and
+      # bare `next lint` prompts interactively when one is missing, which would
+      # hang the runner. Promote this to a blocking check once they have configs.
+      - name: Lint
+        continue-on-error: true
+        run: |
+          if ls eslint.config.* .eslintrc* >/dev/null 2>&1; then
+            npm run lint --if-present
+          else
+            echo "No ESLint config found; skipping lint."
+          fi
