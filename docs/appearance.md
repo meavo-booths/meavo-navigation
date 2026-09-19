@@ -76,8 +76,8 @@ Run `npm test` and `npx tsc --noEmit`. Consumers must run typechecks, lint and b
 then verify both appearances, System changes, cookie failure, first paint, keyboard
 focus, menus, dialogs, mobile layouts and app-specific calendars/charts.
 
-This implementation is for local review only. After approval: choose the next
-unused package version, release its tag, update each fully converted consumer's
-dependency and lockfile, and use its normal PR-to-staging workflow. Do not bump
-MRP, Factory or Clock. Production approval is separate. Rollback restores the
+The approved staging rollout uses `v0.3.0-rc.1`, tagged from the staging PR merge.
+Update each fully converted consumer's dependency and lockfile together, using
+its normal PR-to-staging workflow. No production branch changes are included.
+Do not bump MRP, Factory or Clock. Production approval is separate. Rollback restores the
 previous dependency and app styling together. There are no database migrations.
