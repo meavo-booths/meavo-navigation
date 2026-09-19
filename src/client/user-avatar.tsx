@@ -33,7 +33,7 @@ export function UserAvatar({
       <img
         src={image}
         alt=""
-        className={`${box} shrink-0 rounded-full bg-slate-100 object-cover`}
+        className={`${box} shrink-0 rounded-full bg-surface-hover object-cover`}
         referrerPolicy="no-referrer"
       />
     );
@@ -41,7 +41,7 @@ export function UserAvatar({
 
   return (
     <div
-      className={`${box} flex shrink-0 items-center justify-center rounded-full bg-brand-100 font-medium text-brand-700 ${text}`}
+      className={`${box} flex shrink-0 items-center justify-center rounded-full bg-surface-brand-100 font-medium text-ink-brand-700 ${text}`}
       aria-hidden
     >
       {getInitials(name, email)}
