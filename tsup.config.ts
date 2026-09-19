@@ -19,4 +19,10 @@ export default defineConfig([
     sourcemap: true,
     external: ["@prisma/client"],
   },
+  {
+    entry: ["src/theme.ts", "src/tailwind.ts"],
+    format: ["esm", "cjs"],
+    dts: true,
+    sourcemap: true,
+  },
 ]);

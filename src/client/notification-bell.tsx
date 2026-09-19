@@ -113,7 +113,7 @@ export function NotificationBell({ notifications }: { notifications: Notificatio
     <div ref={rootRef} className="relative">
       <button
         type="button"
-        className="relative inline-flex items-center justify-center rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 touch-manipulation"
+        className="relative inline-flex items-center justify-center rounded-lg p-2 text-secondary transition hover:bg-surface-hover hover:text-foreground touch-manipulation"
         aria-expanded={open}
         aria-haspopup="true"
         aria-label={
@@ -125,20 +125,20 @@ export function NotificationBell({ notifications }: { notifications: Notificatio
       >
         <BellIcon className="h-6 w-6" />
         {feed.unreadCount > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 inline-flex min-w-[1.1rem] items-center justify-center rounded-full bg-red-500 px-1 py-0.5 text-[10px] font-semibold leading-none text-white">
+          <span className="absolute -right-0.5 -top-0.5 inline-flex min-w-[1.1rem] items-center justify-center rounded-full bg-surface-red-500 px-1 py-0.5 text-[10px] font-semibold leading-none text-white">
             {badge}
           </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-[100] mt-1 w-[20rem] max-w-[calc(100vw-1.5rem)] rounded-lg border border-slate-200 bg-white shadow-lg sm:w-[22rem]">
-          <div className="flex items-center justify-between border-b border-slate-100 px-3 py-2">
-            <p className="text-sm font-semibold text-slate-900">Notifications</p>
+        <div className="absolute right-0 top-full z-[100] mt-1 w-[20rem] max-w-[calc(100vw-1.5rem)] rounded-lg border border-line bg-surface shadow-lg sm:w-[22rem]">
+          <div className="flex items-center justify-between border-b border-line-soft px-3 py-2">
+            <p className="text-sm font-semibold text-foreground">Notifications</p>
             {feed.unreadCount > 0 && (
               <button
                 type="button"
-                className="text-xs font-medium text-brand-700 hover:underline"
+                className="text-xs font-medium text-ink-brand-700 hover:underline"
                 onClick={handleMarkAllRead}
               >
                 Mark all read
@@ -146,7 +146,7 @@ export function NotificationBell({ notifications }: { notifications: Notificatio
             )}
           </div>
           {feed.items.length === 0 ? (
-            <p className="px-3 py-6 text-center text-sm text-slate-500">
+            <p className="px-3 py-6 text-center text-sm text-muted">
               You&apos;re all caught up.
             </p>
           ) : (
@@ -155,23 +155,23 @@ export function NotificationBell({ notifications }: { notifications: Notificatio
                 <li key={item.id}>
                   <button
                     type="button"
-                    className={`flex w-full items-start gap-2 px-3 py-2.5 text-left transition hover:bg-slate-50 touch-manipulation ${
+                    className={`flex w-full items-start gap-2 px-3 py-2.5 text-left transition hover:bg-surface-muted touch-manipulation ${
                       item.readAt ? "opacity-70" : ""
                     }`}
                     onClick={() => handleItemClick(item)}
                   >
                     <span
                       className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
-                        item.readAt ? "bg-transparent" : "bg-brand-500"
+                        item.readAt ? "bg-transparent" : "bg-surface-brand-500"
                       }`}
                       aria-hidden
                     />
                     <span className="min-w-0">
-                      <span className="block truncate text-sm font-medium text-slate-900">
+                      <span className="block truncate text-sm font-medium text-foreground">
                         {item.title}
                       </span>
-                      <span className="block text-xs text-slate-600">{item.body}</span>
-                      <span className="mt-0.5 block text-[11px] text-slate-400">
+                      <span className="block text-xs text-secondary">{item.body}</span>
+                      <span className="mt-0.5 block text-[11px] text-faint">
                         {relativeTime(item.createdAt)}
                       </span>
                     </span>

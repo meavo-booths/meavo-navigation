@@ -45,6 +45,8 @@ Set `MEAVO_APP_KEY=gateway|hols|assembly|sales|mrp|factory|rp|clock|tasks` and `
 
 ## Documentation
 
+Light/Dark/System integration and rollout: [Shared appearance](docs/appearance.md).
+
 | Doc | Purpose |
 |-----|---------|
 | [AGENTS.md](AGENTS.md) | Quick orientation for AI coding agents |
