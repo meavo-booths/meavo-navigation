@@ -8,7 +8,8 @@ export type MeavoAppKey =
   | "rp"
   | "clock"
   | "tasks"
-  | "requests";
+  | "requests"
+  | "stock";
 
 export type NavLink = {
   href: string;
