@@ -13,7 +13,7 @@ Quick orientation for AI agents working in this repo. Read this before exploring
 - TypeScript strict, React 19 client components + framework-agnostic server helpers
 - Next.js and the Prisma client are **peer dependencies** — this is a library, not an app
 - Tailwind CSS class names only — compiled by the **consumer** app's Tailwind config, not here
-- Built with tsup → ESM in `dist/`; two entry points: `.` (client, `"use client"` banner) and `./server`
+- Built with tsup → `dist/`: `.` (client), `./server`, pure `./theme`, and build-only ESM/CJS `./tailwind`
 - No database of its own — consumers pass their `@meavo/db` Prisma client into `getAccessibleTools`
 - Distributed via git tag refs (`#vX.Y.Z`) and GitHub Packages (`npm.pkg.github.com`); `prepare` builds on git installs
 
@@ -33,7 +33,8 @@ Quick orientation for AI agents working in this repo. Read this before exploring
 | Build & bundling config | `tsup.config.ts` |
 | Auth & access | N/A — consumers own auth; this package only filters `ToolCard` rows by `ToolCardAccess` |
 | DB schema | N/A — `ToolCard` / `ToolCardAccess` live in [meavo-db](https://github.com/meavo-booths/meavo-db) |
-| Tests | N/A — no test suite; type-check with `npx tsc --noEmit` |
+| Appearance API, cookie contract and rollout | `docs/appearance.md`, `src/theme.ts`, `src/client/theme-provider.tsx`, `src/tailwind.ts` |
+| Tests | `npm test` builds and tests the cookie helpers; also type-check with `npx tsc --noEmit` |
 
 ## Do NOT
 
