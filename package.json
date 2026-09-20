@@ -1,6 +1,6 @@
 {
   "name": "@meavo/navigation",
-  "version": "0.3.0-rc.1",
+  "version": "0.3.0-rc.2",
   "description": "Shared main navigation header for Meavo apps",
   "type": "module",
   "main": "./dist/index.js",

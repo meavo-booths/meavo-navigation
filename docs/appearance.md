@@ -66,9 +66,13 @@ light-mode labels and uses high-contrast dark ink on green dark-mode buttons.
 Existing sparse consumer brand palettes are retained; do not activate formerly
 undefined brand classes as part of a theme-only conversion.
 
-`.meavo-logo` adds a white backing only in dark mode. `.meavo-document` maintains
-light tokens for an embedded document preview. Print resets the full palette to
-light. Do not migrate PDF/email templates, photo pixels or product swatches.
+`img.meavo-logo` uses `/meavo-logo-white.png` on dark surfaces, including System
+when the OS prefers dark. Each consumer must ship the approved transparent white
+PNG at `public/meavo-logo-white.png` alongside its unchanged light logo. The swap
+is CSS-only: original markup, alt text, image sizing and light-mode source stay
+intact. There is no white backing. `.meavo-document` and print restore the original
+light logo as well as light colours. Do not migrate PDF/email templates, photo
+pixels or product swatches.
 
 ## Verification and release gate
 
@@ -76,7 +80,9 @@ Run `npm test` and `npx tsc --noEmit`. Consumers must run typechecks, lint and b
 then verify both appearances, System changes, cookie failure, first paint, keyboard
 focus, menus, dialogs, mobile layouts and app-specific calendars/charts.
 
-The approved staging rollout uses `v0.3.0-rc.1`, tagged from the staging PR merge.
+The initial staging rollout used `v0.3.0-rc.1`. The white-logo follow-up uses
+`v0.3.0-rc.2`, tagged from its staging PR merge. Ship the white PNG in each consumer
+in the same PR as the dependency bump.
 Update each fully converted consumer's dependency and lockfile together, using
 its normal PR-to-staging workflow. No production branch changes are included.
 Do not bump MRP, Factory or Clock. Production approval is separate. Rollback restores the
