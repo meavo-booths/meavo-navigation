@@ -42,3 +42,17 @@ test("preset generates complete light/dark/print palettes without runtime code",
   assert.doesNotMatch(JSON.stringify(rules), /undefined|NaN/);
   for (const value of Object.values(preset.theme.extend.colors)) assert.match(value, /^rgb\(var\(--meavo-/);
 });
+
+test("interface logos use the white asset only on dark surfaces, including System", () => {
+  let rules;
+  createMeavoThemePreset().plugins[0]({ addBase: (value) => { rules = value; }, theme: () => undefined });
+  const dark = ':root[data-meavo-theme="dark"]';
+  const system = ':root:not([data-meavo-theme="light"]):not([data-meavo-theme="dark"])';
+  assert.equal(rules["img.meavo-logo"].content, "var(--meavo-logo-image, normal)");
+  assert.equal(rules[":root"]["--meavo-logo-image"], "normal");
+  assert.equal(rules[dark]["--meavo-logo-image"], 'url("/meavo-logo-white.png")');
+  assert.equal(rules["@media screen and (prefers-color-scheme: dark)"][system]["--meavo-logo-image"], rules[dark]["--meavo-logo-image"]);
+  assert.equal(rules[".meavo-document"]["--meavo-logo-image"], "normal");
+  for (const value of Object.values(rules["@media print"])) assert.equal(value["--meavo-logo-image"], "normal");
+  assert.doesNotMatch(JSON.stringify(rules), /boxShadow/);
+});

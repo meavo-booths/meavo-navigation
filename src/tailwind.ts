@@ -62,6 +62,10 @@ export function createMeavoThemePreset({ canvas = "#f8fafc" }: { canvas?: string
     const chevron = (stroke: string) => `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1.5 1.75L6 6.25L10.5 1.75' stroke='%23${stroke}' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`;
     day["--meavo-select-chevron"] = chevron("475569");
     night["--meavo-select-chevron"] = chevron("94a3b8");
+    // Swap only interface logos, before hydration and on live System changes.
+    // Light/print/document surfaces retain each image's original src and alt.
+    day["--meavo-logo-image"] = "normal";
+    night["--meavo-logo-image"] = 'url("/meavo-logo-white.png")';
     // Consumer-owned brand values stay intact (Tasks/Requests use a distinct 600).
     for (const shade of shades) {
       const brand = theme(`colors.brand.${shade}`);
@@ -69,15 +73,13 @@ export function createMeavoThemePreset({ canvas = "#f8fafc" }: { canvas?: string
       for (const role of ["ink", "surface", "line"]) day[`--meavo-${role}-brand-${shade}`] = rgb(brand);
       if (shade >= 400) night[`--meavo-surface-brand-${shade}`] = rgb(brand);
     }
-    const logo = { backgroundColor: "#ffffff", borderRadius: "0.25rem", boxShadow: "0 0 0 3px #ffffff" };
     addBase({
       ":root": { ...day, colorScheme: "light" },
       [DARK]: { ...night, colorScheme: "dark" },
       ".meavo-document": { ...day, colorScheme: "light" },
-      [`${DARK} .meavo-logo`]: logo,
+      "img.meavo-logo": { content: "var(--meavo-logo-image, normal)" },
       '@media screen and (prefers-color-scheme: dark)': {
         [SYSTEM]: { ...night, colorScheme: "dark" },
-        [`${SYSTEM} .meavo-logo`]: logo,
       },
       // Plain native inputs previously relied on the browser's white default.
       'input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]), textarea, select': {
@@ -85,7 +87,6 @@ export function createMeavoThemePreset({ canvas = "#f8fafc" }: { canvas?: string
       },
       "@media print": {
         ':root, :root[data-meavo-theme="dark"], :root[data-meavo-theme="system"]': { ...day, colorScheme: "light" },
-        ".meavo-logo": { boxShadow: "none" },
       },
     });
   }
