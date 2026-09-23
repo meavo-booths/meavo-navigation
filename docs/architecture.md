@@ -68,7 +68,7 @@ None read by this package. Consumers set `MEAVO_APP_KEY` (their key) and `GATEWA
 
 ## Release & distribution
 
-1. Bump `version` in `package.json`; commit to `main`.
-2. Tag `vX.Y.Z` and push with tags.
+1. Prepare the version bump on `feat/*`, open a PR against `staging`, and validate the package in affected consumer previews.
+2. Follow [RELEASE_POLICY.md](../RELEASE_POLICY.md): promotion to `main`, tag publication, and package publication require specific human approval for the action and revision.
 3. Consumers pin `"@meavo/navigation": "git+https://github.com/meavo-booths/meavo-navigation.git#vX.Y.Z"` (HTTPS URL — `github:` shorthand breaks on Vercel) and run `npm install`; `prepare` builds `dist/` on install.
-4. Also publishable to GitHub Packages (`npm.pkg.github.com`) via `publishConfig`.
+4. Also publishable to GitHub Packages (`npm.pkg.github.com`) via `publishConfig`, subject to the same explicit human release approval. Consumer changes go through feature PRs to `staging` before separately approved production rollout.

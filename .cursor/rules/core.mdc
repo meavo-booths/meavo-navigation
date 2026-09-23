@@ -49,7 +49,7 @@ Browser:
     → *.meavo.app host: same tab | anything else: new tab (noopener)
 ```
 
-Every public-API change must be released: bump `package.json` version → tag `vX.Y.Z` → push tags → bump git ref in consumer repos.
+Prepare public-API changes and a version bump on `feat/*`, then validate through `staging` and affected consumer previews. Follow `RELEASE_POLICY.md`: `main` changes, version tags, and package publication require specific human approval. Prepare consumer bumps as feature PRs to `staging`; completing the code does not authorize publishing.
 
 ## Docs for agents
 
