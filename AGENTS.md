@@ -1,3 +1,12 @@
+<!-- BEGIN MEAVO RELEASE POLICY -->
+## Release safety — mandatory for all AI agents
+
+- Default scope: create `feat/`, `fix/`, or `chore/` branches from `staging`; use PRs into `staging` and squash only after required checks pass.
+- Do not merge to `main`, enable auto-merge/queue a production PR, or change production without **explicit human approval for this repository, the specific action, and the reviewed PR/head SHA or exact artifact/configuration scope**. Changed scope or head invalidates approval; never infer or generate it. Reuse still-valid approval without asking again.
+- Never push directly to `main`/`staging` or bypass protections. Missing `staging` is not permission to use `main`.
+- Read [RELEASE_POLICY.md](RELEASE_POLICY.md) before any release, deployment, environment, schema, or tag/package publication action. Verify actual environment destinations before writes.
+<!-- END MEAVO RELEASE POLICY -->
+
 # Agent guide — meavo-navigation
 
 Quick orientation for AI agents working in this repo. Read this before exploring blindly.
@@ -60,7 +69,7 @@ npx tsc --noEmit     # type check (no test suite, no lint config)
 
 1. Client components live in `src/client/`, server helpers in `src/server/`, shared types/constants at the `src/` root — keep the two entry graphs separate.
 2. Visual language follows the Meavo UI standard: brand green + Tailwind `slate`, mobile-first, ≥44px touch targets (see `.cursor/rules/ui.mdc`).
-3. Any public-API change (exports, props, behaviour) requires: bump `version` in `package.json` → commit → tag `vX.Y.Z` → push with tags → bump the git ref in consumer repos.
+3. Prepare public-API changes (exports, props, behaviour) and the version bump on `feat/*`; validate through `staging` and consumer previews. `RELEASE_POLICY.md` requires specific human approval before `main` promotion or tag/package publication. Prepare consumer bumps through feature PRs to `staging`; code completion does not authorize a release.
 
 ## Scoped task template (preferred from user)
 
