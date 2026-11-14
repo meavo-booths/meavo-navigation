@@ -1,6 +1,6 @@
 {
   "name": "@meavo/navigation",
-  "version": "0.3.0-rc.3",
+  "version": "0.3.0-rc.4",
   "description": "Shared main navigation header for Meavo apps",
   "type": "module",
   "main": "./dist/index.js",
@@ -28,8 +28,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "node scripts/clean-dist.mjs && tsup && node scripts/check-dist.mjs",
     "test": "npm run build && node --test tests/*.test.mjs",
+    "test:consumer": "node scripts/check-consumer-install.mjs",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build"
   },
