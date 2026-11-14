@@ -24,20 +24,31 @@ jobs:
           node-version: "24"
           cache: npm
 
-      # postinstall runs `prisma generate`, which reads the shared schema from
-      # @meavo/db and never connects to a database, so no secrets are needed.
+      # `npm ci` runs this package's `prepare` script, which builds dist/ the
+      # same way an app's install from a git tag does. No secrets are needed.
       - run: npm ci
 
       - name: Typecheck
         run: npx tsc --noEmit
 
+      - name: Theme tests
+        run: npm test
+
+      # Packs the package, installs the tarball into an empty project and
+      # loads every entry point, so a build that drops a file fails here and
+      # not in an app's CI.
+      - name: Consumer install check
+        run: npm run test:consumer
+
       # Advisory only: meavo-rp and meavo-clock still lack an ESLint config, and
       # bare `next lint` prompts interactively when one is missing, which would
       # hang the runner. Promote this to a blocking check once they have configs.
+      # The guard tests each config style on its own: `ls a b` fails when either
+      # pattern has no match, which skipped lint for repos with only one style.
       - name: Lint
         continue-on-error: true
         run: |
-          if ls eslint.config.* .eslintrc* >/dev/null 2>&1; then
+          if compgen -G "eslint.config.*" >/dev/null || compgen -G ".eslintrc*" >/dev/null; then
             npm run lint --if-present
           else
             echo "No ESLint config found; skipping lint."

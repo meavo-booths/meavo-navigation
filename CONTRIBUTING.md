@@ -11,7 +11,8 @@ Create `feat/`, `fix/`, or `chore/` branches from `staging` and open PRs explici
 - [ ] Changes are scoped to the request — no drive-by refactors
 - [ ] `npx tsc --noEmit` passes (no lint config in this repo)
 - [ ] `npm run build` succeeds (tsup, both entries)
-- [ ] No test suite — describe the manual check (which consumer app you rendered it in, at 375px and 1280px)
+- [ ] `npm test` and `npm run test:consumer` pass (CI runs both)
+- [ ] For visible changes, describe the manual check (which consumer app you rendered it in, at 375px and 1280px)
 - [ ] Agent docs updated if you added exports, app keys, or changed tool-visibility behaviour
 - [ ] New/changed public API keeps `package.json` `exports` and `tsup.config.ts` in sync
 

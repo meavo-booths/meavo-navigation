@@ -20,6 +20,7 @@ Shared npm package providing the Meavo top-navigation header and tool switcher u
 - **No direct `@meavo/db` import:** `getAccessibleTools` accepts a structural `NavigationPrisma` type, keeping this package free of schema/version coupling.
 - **Tailwind by proxy:** components emit Tailwind class names; each consumer's Tailwind config compiles them (consumer `content` must include `node_modules/@meavo/navigation/dist/**/*.js`, and `transpilePackages: ["@meavo/navigation"]` in `next.config.ts`).
 - **tsup dual entry:** client entry gets a `"use client"` banner so consumers can import components straight into Server Component layouts; server entry stays directive-free.
+- **One clean, then a check:** tsup builds its three configurations at the same time into one `dist/`, so none of them may set `clean` (one configuration's clean deleted another's `server.d.ts` on some installs). `npm run build` empties `dist/` first, runs tsup, then fails if a file named in `package.json` is missing. `npm run test:consumer` installs the packed tarball into an empty project and loads every entry point; CI runs it.
 
 ## Repository layout
 
