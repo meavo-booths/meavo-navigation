@@ -5,6 +5,8 @@ const DARK = ':root[data-meavo-theme="dark"]';
 const SYSTEM = ':root:not([data-meavo-theme="light"]):not([data-meavo-theme="dark"])';
 const shades = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 const neutralNames = new Set(["slate", "gray", "zinc", "neutral", "stone"]);
+/** Dark-mode brand fills: the bright MEAVO green under near-black `on-brand` text (6:1). */
+const BRAND_NIGHT_SURFACE: Record<number, string> = { 500: "#30A46C", 600: "#30A46C", 700: "#0C8F61" };
 
 function rgb(hex: string) {
   const expanded = hex.length === 4 ? `#${[...hex.slice(1)].map((c) => c + c).join("")}` : hex;
@@ -42,7 +44,11 @@ export function createMeavoThemePreset({ canvas = "#f8fafc" }: { canvas?: string
 
   // Separate ink/surface/line tokens: a red label and a red button cannot share
   // the same dark-mode mapping. Light values retain the original Tailwind hues.
-  const palette: Record<string, Record<string, string>> = { ...palettes, brand: { ...palettes.emerald, 50: "#f0fdf4", 100: "#d1f4e0", 500: "#30A46C", 600: "#30A46C", 700: "#0C8F61" } };
+  // Brand green. By day 600/700 are deep enough for white text and for links on
+  // white (WCAG AA: #047857 5.5:1, #065f46 7.6:1). By night the brighter MEAVO
+  // green stays, under near-black text (`on-brand`), exactly as before.
+  const brand = { ...palettes.emerald, 50: "#f0fdf4", 100: "#d1f4e0", 500: "#30A46C", 600: "#047857", 700: "#065f46" };
+  const palette: Record<string, Record<string, string>> = { ...palettes, brand };
   for (const [name, scale] of Object.entries(palette)) {
     for (const shade of shades) {
       const neutral = neutralNames.has(name);
@@ -50,8 +56,9 @@ export function createMeavoThemePreset({ canvas = "#f8fafc" }: { canvas?: string
       const surfaceShade = shade <= 300 ? 1000 - shade : shade;
       const lineShade = shade === 50 ? 900 : shade <= 300 ? 900 - shade : shade <= 600 ? 500 : 400;
       const nightInk = neutral ? s[Math.max(100, Math.min(400, inkShade))] : palettes[name === "brand" ? "emerald" : name][inkShade];
+      const nightSurface = (name === "brand" && BRAND_NIGHT_SURFACE[shade]) || scale[surfaceShade];
       token(`ink-${name}-${shade}`, scale[shade], nightInk);
-      token(`surface-${name}-${shade}`, scale[shade], scale[surfaceShade]);
+      token(`surface-${name}-${shade}`, scale[shade], nightSurface);
       token(`line-${name}-${shade}`, scale[shade], scale[lineShade]);
     }
   }
@@ -67,11 +74,12 @@ export function createMeavoThemePreset({ canvas = "#f8fafc" }: { canvas?: string
     day["--meavo-logo-image"] = "normal";
     night["--meavo-logo-image"] = 'url("/meavo-logo-white.png")';
     // Consumer-owned brand values stay intact (Tasks/Requests use a distinct 600).
+    // Apps that still copy the old shared greens keep them until they drop the copy.
     for (const shade of shades) {
-      const brand = theme(`colors.brand.${shade}`);
-      if (typeof brand !== "string" || !/^#[\da-f]{3}(?:[\da-f]{3})?$/i.test(brand)) continue;
-      for (const role of ["ink", "surface", "line"]) day[`--meavo-${role}-brand-${shade}`] = rgb(brand);
-      if (shade >= 400) night[`--meavo-surface-brand-${shade}`] = rgb(brand);
+      const value = theme(`colors.brand.${shade}`);
+      if (typeof value !== "string" || !/^#[\da-f]{3}(?:[\da-f]{3})?$/i.test(value)) continue;
+      for (const role of ["ink", "surface", "line"]) day[`--meavo-${role}-brand-${shade}`] = rgb(value);
+      if (shade >= 400) night[`--meavo-surface-brand-${shade}`] = rgb(value);
     }
     addBase({
       ":root": { ...day, colorScheme: "light" },
