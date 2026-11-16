@@ -43,6 +43,33 @@ test("preset generates complete light/dark/print palettes without runtime code",
   for (const value of Object.values(preset.theme.extend.colors)) assert.match(value, /^rgb\(var\(--meavo-/);
 });
 
+test("shared brand green meets WCAG AA by day and keeps the bright green by night", () => {
+  let rules;
+  createMeavoThemePreset().plugins[0]({ addBase: (value) => { rules = value; }, theme: () => undefined });
+  const day = rules[":root"];
+  const night = rules[':root[data-meavo-theme="dark"]'];
+  const luminance = (triplet) => {
+    const [r, g, b] = triplet.split(" ").map((v) => {
+      const c = Number(v) / 255;
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const contrast = (a, b) => {
+    const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+    return (hi + 0.05) / (lo + 0.05);
+  };
+  // Primary button (white text on 600, hover 700) and links (ink-700 on white).
+  assert.ok(contrast(day["--meavo-surface-brand-600"], day["--meavo-on-brand"]) >= 4.5);
+  assert.ok(contrast(day["--meavo-surface-brand-700"], day["--meavo-on-brand"]) >= 4.5);
+  assert.ok(contrast(day["--meavo-ink-brand-700"], day["--meavo-surface"]) >= 4.5);
+  assert.ok(contrast(day["--meavo-ink-brand-700"], day["--meavo-canvas"]) >= 4.5);
+  // Dark mode is unchanged: bright green under near-black text.
+  assert.equal(night["--meavo-surface-brand-600"], "48 164 108");
+  assert.equal(night["--meavo-surface-brand-700"], "12 143 97");
+  assert.ok(contrast(night["--meavo-surface-brand-600"], night["--meavo-on-brand"]) >= 4.5);
+});
+
 test("interface logos use the white asset only on dark surfaces, including System", () => {
   let rules;
   createMeavoThemePreset().plugins[0]({ addBase: (value) => { rules = value; }, theme: () => undefined });
