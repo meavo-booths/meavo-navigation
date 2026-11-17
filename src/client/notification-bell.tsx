@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { parseNotificationFeed } from "../notification-feed";
 import type { NotificationFeed, NotificationItem, NotificationsState } from "../types";
 
 const POLL_INTERVAL_MS = 60_000;
@@ -32,12 +33,20 @@ export function NotificationBell({ notifications }: { notifications: Notificatio
   const [feed, setFeed] = useState<NotificationFeed>(notifications.initial);
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const refreshRef = useRef(notifications.refresh);
-  refreshRef.current = notifications.refresh;
+  const sourceRef = useRef({ url: notifications.refreshUrl, action: notifications.refresh });
+  sourceRef.current = { url: notifications.refreshUrl, action: notifications.refresh };
 
   const refresh = useCallback(async () => {
     try {
-      setFeed(await refreshRef.current());
+      const { url, action } = sourceRef.current;
+      if (url) {
+        // A plain GET, so the once-a-minute poll never sits in the router's Server Action queue.
+        const response = await fetch(url, { cache: "no-store", credentials: "same-origin" });
+        const next = response.ok ? parseNotificationFeed(await response.json()) : null;
+        if (next) setFeed(next);
+      } else if (action) {
+        setFeed(await action());
+      }
     } catch {
       // Keep the last known feed on transient errors.
     }
