@@ -10,7 +10,8 @@ export type MeavoAppKey =
   | "tasks"
   | "requests"
   | "stock"
-  | "inventory";
+  | "inventory"
+  | "showroom";
 
 export type NavLink = {
   href: string;
